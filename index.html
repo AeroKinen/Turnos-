@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1923">
+<title>TURNOS — Gestión de Plantilla</title>
+<link rel="manifest" href="#" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ══ DARK MODE (default) ══ */
+  :root {
+    --bg: #0f1923;
+    --surface: #162030;
+    --surface2: #1d2d40;
+    --border: #263a52;
+    --accent: #e8f0fe;
+    --text: #c8d8ea;
+    --muted: #5a7a96;
+    --logo-color: #fff;
+    --total-value: #fff;
+    --input-color: #c8d8ea;
+    --select-bg: #1d2d40;
+    --slot-bg: #162030;
+    --modal-bg: #1d2d40;
+    --summary-val: #fff;
+    --tab-active-bg: #0f1923;
+    --tab-active-border: #0f1923;
+    --week-tab-bg: #1d2d40;
+
+    --esencial: #f472b6;
+    --esencial-bg: rgba(244,114,182,0.10);
+    --esencial-border: rgba(244,114,182,0.35);
+
+    --admin: #60a5fa;
+    --admin-bg: rgba(96,165,250,0.10);
+    --admin-border: rgba(96,165,250,0.35);
+
+    --operario: #4ade80;
+    --operario-bg: rgba(74,222,128,0.10);
+    --operario-border: rgba(74,222,128,0.35);
+
+    --manana: #fde68a;
+    --tarde: #fb923c;
+    --noche: #a78bfa;
+  }
+
+  /* ══ LIGHT MODE — Windows Vista Aero ══ */
+  body.light {
+    --bg: #dce8f5;
+    --surface: rgba(255,255,255,0.72);
+    --surface2: rgba(235,245,255,0.80);
+    --border: rgba(130,175,220,0.55);
+    --text: #1a3450;
+    --muted: #6a8faf;
+    --logo-color: #0d2e52;
+    --total-value: #0d2e52;
+    --input-color: #1a3450;
+    --select-bg: rgba(225,240,255,0.95);
+    --slot-bg: rgba(245,251,255,0.9);
+    --modal-bg: rgba(230,242,255,0.97);
+    --summary-val: #0d2e52;
+    --tab-active-bg: rgba(240,249,255,0.95);
+    --tab-active-border: rgba(240,249,255,0.95);
+    --week-tab-bg: rgba(200,225,248,0.6);
+
+    --esencial: #c0267a;
+    --esencial-bg: rgba(192,38,122,0.08);
+    --esencial-border: rgba(192,38,122,0.3);
+
+    --admin: #1a5fb4;
+    --admin-bg: rgba(26,95,180,0.08);
+    --admin-border: rgba(26,95,180,0.3);
+
+    --operario: #1a7a40;
+    --operario-bg: rgba(26,122,64,0.08);
+    --operario-border: rgba(26,122,64,0.3);
+
+    --manana: #a06800;
+    --tarde: #c04a00;
+    --noche: #5a3fa0;
+  }
+
+  /* Aero glass body background */
+  body.light {
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(180,215,255,0.9) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 10%, rgba(210,230,255,0.7) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(160,200,240,0.5) 0%, transparent 60%),
+      linear-gradient(160deg, #c8dff5 0%, #daeaf8 40%, #cfe0f2 100%);
+  }
+
+  /* Aero glass panels */
+  body.light header,
+  body.light .panel-left,
+  body.light .summary-bar {
+    background: rgba(210,232,252,0.82);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 12px rgba(80,140,200,0.15);
+  }
+
+  body.light .group-card,
+  body.light .turno-card,
+  body.light .total-global,
+  body.light .summary-card,
+  body.light .modal {
+    background: rgba(235,248,255,0.78);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 1px 6px rgba(80,140,200,0.12);
+  }
+
+  body.light .worker-row,
+  body.light .slot-item {
+    background: rgba(245,252,255,0.88);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  body.light .week-tabs {
+    background: rgba(200,225,248,0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  body.light .week-tab {
+    background: var(--week-tab-bg);
+    backdrop-filter: blur(8px);
+  }
+
+  body.light .week-tab.active {
+    background: var(--tab-active-bg);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 -1px 4px rgba(80,140,200,0.1);
+  }
+
+  /* Aero button style */
+  body.light .btn-new-week {
+    background: linear-gradient(180deg, #5ba3e8 0%, #2a6fc4 45%, #1a5ab0 50%, #3278d0 100%);
+    border: 1px solid #1a50a0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 4px rgba(20,60,140,0.35);
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  }
+  body.light .btn-new-week:hover {
+    background: linear-gradient(180deg, #6bb3f8 0%, #3a7fd4 45%, #2a6ac0 50%, #4288e0 100%);
+  }
+
+  body.light .btn-add-worker {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(200,225,248,0.8) 100%);
+    border: 1px solid rgba(100,160,220,0.5);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  body.light .btn-add-worker:hover { background: rgba(180,215,250,0.8); }
+
+  body.light .btn-add-slot { opacity: 0.9; }
+
+  body.light .modal-bg-overlay { background: rgba(50,100,160,0.35); }
+
+  body.light .btn-cancel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(210,228,248,0.9) 100%);
+    border: 1px solid rgba(100,160,210,0.5);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  body.light .btn-confirm {
+    background: linear-gradient(180deg, #5ba3e8 0%, #1a5ab0 100%);
+    border: 1px solid #1a50a0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+  }
+
+  body.light .slot-select { background: var(--select-bg); color: var(--text); }
+  body.light .slot-select option { background: #e8f4ff; color: #1a3450; }
+
+  body.light .total-global .value { color: var(--total-value); }
+  body.light .s-val { color: var(--summary-val); }
+  body.light .logo { color: var(--logo-color); }
+  body.light .worker-name-input { color: var(--input-color); }
+  body.light .checkbox-row { background: rgba(230,244,255,0.8); }
+
+  /* ══ THEME TOGGLE BUTTON ══ */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 13px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover { border-color: var(--admin); color: var(--admin); }
+
+  body.light .theme-toggle {
+    background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(205,228,250,0.85) 100%);
+    border: 1px solid rgba(100,160,215,0.55);
+    color: #1a3450;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 1px 3px rgba(60,120,180,0.15);
+  }
+  body.light .theme-toggle:hover {
+    background: rgba(180,215,250,0.85);
+    border-color: rgba(26,95,180,0.6);
+  }
+
+  .toggle-icon { font-size: 15px; line-height: 1; }
+  .toggle-text { letter-spacing: .02em; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    color: #fff;
+  }
+  .logo span { color: var(--esencial); }
+
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .week-nav button {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background .15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .week-nav button:hover { background: var(--border); }
+  .week-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    min-width: 90px;
+    text-align: center;
+    letter-spacing: .05em;
+  }
+  .btn-new-week {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border: none;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: .03em;
+    transition: opacity .15s, transform .1s;
+  }
+  .btn-new-week:hover { opacity: .88; transform: translateY(-1px); }
+
+  /* ── LAYOUT ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 65px);
+  }
+
+  /* ── LEFT PANEL (GRUPOS) ── */
+  .panel-left {
+    border-right: 1px solid var(--border);
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--surface);
+  }
+  .panel-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .group-card {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--surface2);
+  }
+  .group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .group-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .group-card[data-group="esencial"] .group-name { color: var(--esencial); }
+  .group-card[data-group="admin"] .group-name { color: var(--admin); }
+  .group-card[data-group="operario"] .group-name { color: var(--operario); }
+
+  .btn-add-worker {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--border);
+    border: none;
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background .15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-add-worker:hover { background: #304d6a; }
+  .group-card[data-group="esencial"] .btn-add-worker:hover { background: var(--esencial-bg); color: var(--esencial); }
+  .group-card[data-group="admin"] .btn-add-worker:hover { background: var(--admin-bg); color: var(--admin); }
+  .group-card[data-group="operario"] .btn-add-worker:hover { background: var(--operario-bg); color: var(--operario); }
+
+  .workers-list {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 40px;
+  }
+  .worker-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    background: var(--surface);
+    border: 1px solid transparent;
+    transition: border-color .15s;
+  }
+  .worker-row:hover { border-color: var(--border); }
+  .worker-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .group-card[data-group="esencial"] .worker-dot { background: var(--esencial); }
+  .group-card[data-group="admin"] .worker-dot { background: var(--admin); }
+  .group-card[data-group="operario"] .worker-dot { background: var(--operario); }
+
+  .worker-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    min-width: 0;
+  }
+  .worker-name-input::placeholder { color: var(--muted); font-style: italic; }
+
+  .btn-remove {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color .15s, background .15s;
+    flex-shrink: 0;
+  }
+  .btn-remove:hover { color: #f87171; background: rgba(248,113,113,.12); }
+
+  .group-footer {
+    padding: 8px 14px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .group-footer span { color: var(--text); font-weight: 500; }
+
+  /* TOTAL GLOBAL */
+  .total-global {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .total-global .label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .total-global .value {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  /* ── RIGHT PANEL (TURNOS) ── */
+  .panel-right {
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  .turno-card {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    overflow: hidden;
+  }
+  .turno-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .turno-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .turno-pill {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .turno-card[data-turno="manana"] .turno-pill { background: rgba(253,230,138,.15); color: var(--manana); border: 1px solid rgba(253,230,138,.3); }
+  .turno-card[data-turno="tarde"] .turno-pill { background: rgba(251,146,60,.12); color: var(--tarde); border: 1px solid rgba(251,146,60,.3); }
+  .turno-card[data-turno="noche"] .turno-pill { background: rgba(167,139,250,.12); color: var(--noche); border: 1px solid rgba(167,139,250,.3); }
+
+  .turno-total {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .turno-total span { color: #fff; font-weight: 500; }
+
+  .turno-body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .turno-col {
+    padding: 14px 16px;
+    border-right: 1px solid var(--border);
+  }
+  .turno-col:last-child { border-right: none; }
+
+  .col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .col-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .turno-col[data-group="esencial"] .col-label { color: var(--esencial); }
+  .turno-col[data-group="admin"] .col-label { color: var(--admin); }
+  .turno-col[data-group="operario"] .col-label { color: var(--operario); }
+
+  .btn-add-slot {
+    display: flex; align-items: center; gap: 3px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 3px 7px;
+    border-radius: 5px;
+    transition: background .15s;
+  }
+  .turno-col[data-group="esencial"] .btn-add-slot { color: var(--esencial); }
+  .turno-col[data-group="esencial"] .btn-add-slot:hover { background: var(--esencial-bg); }
+  .turno-col[data-group="admin"] .btn-add-slot { color: var(--admin); }
+  .turno-col[data-group="admin"] .btn-add-slot:hover { background: var(--admin-bg); }
+  .turno-col[data-group="operario"] .btn-add-slot { color: var(--operario); }
+  .turno-col[data-group="operario"] .btn-add-slot:hover { background: var(--operario-bg); }
+
+  .slot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 32px;
+  }
+
+  .slot-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 5px 9px;
+    position: relative;
+    animation: fadeIn .18s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+
+  .slot-select {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    outline: none;
+    cursor: pointer;
+    min-width: 0;
+  }
+  .slot-select option { background: #1d2d40; color: var(--text); }
+
+  .btn-remove-slot {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px;
+    border-radius: 3px;
+    transition: color .15s;
+    flex-shrink: 0;
+  }
+  .btn-remove-slot:hover { color: #f87171; }
+
+  .col-subtotal {
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .col-subtotal span { color: var(--text); }
+
+  /* ── RESUMEN INFERIOR ── */
+  .summary-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    position: sticky;
+    bottom: 0;
+  }
+  .summary-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .summary-card .s-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .summary-card[data-turno="manana"] .s-label { color: var(--manana); }
+  .summary-card[data-turno="tarde"] .s-label { color: var(--tarde); }
+  .summary-card[data-turno="noche"] .s-label { color: var(--noche); }
+  .summary-card .s-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .summary-card .s-detail {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── MODAL nueva semana ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.65);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    width: 460px;
+    max-width: 96vw;
+    box-shadow: 0 24px 64px rgba(0,0,0,.5);
+  }
+  .modal h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .modal p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  .btn-cancel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    transition: background .15s;
+  }
+  .btn-cancel:hover { background: var(--border); }
+  .btn-confirm {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border: none;
+    color: #fff;
+    padding: 9px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: opacity .15s;
+  }
+  .btn-confirm:hover { opacity: .88; }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .checkbox-row:hover { border-color: #3b82f6; }
+  .checkbox-row input { accent-color: #3b82f6; width: 16px; height: 16px; cursor: pointer; }
+  .checkbox-row label { font-size: 13px; color: var(--text); cursor: pointer; flex: 1; }
+  .checkbox-row small { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    padding: 4px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* WEEK TABS */
+  .week-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 14px 24px 0;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .week-tab {
+    padding: 7px 14px;
+    border-radius: 8px 8px 0 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    cursor: pointer;
+    transition: color .15s, background .15s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .week-tab:hover { color: var(--text); }
+  .week-tab.active {
+    background: var(--bg);
+    color: #fff;
+    border-bottom: 1px solid var(--bg);
+    margin-bottom: -1px;
+  }
+  .week-tab .del-week {
+    font-size: 10px;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    border-radius: 3px;
+    transition: color .15s;
+  }
+  .week-tab:hover .del-week { color: #f87171; }
+  .week-tab.active .del-week { color: var(--muted); }
+
+  /* Light mode: week tab text dark */
+  body.light .week-tab { color: #3a5a7a; }
+  body.light .week-tab:hover { color: #0d2e52; }
+  body.light .week-tab.active { color: #0d2e52; font-weight: 800; }
+  body.light .week-tab.active .del-week { color: #6a8faf; }
+
+  /* ── HORARIO EDITABLE en turno-header ── */
+  .turno-horario {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .horario-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    width: 46px;
+    text-align: center;
+    outline: none;
+    padding: 1px 2px;
+    border-radius: 2px;
+    transition: border-color .15s, background .15s;
+    cursor: pointer;
+  }
+  .horario-input:hover { border-bottom-color: var(--admin); background: var(--admin-bg); }
+  .horario-input:focus { border-bottom-color: var(--admin); background: var(--admin-bg); color: #fff; }
+  body.light .horario-input:focus { color: #0d2e52; }
+  .horario-sep { color: var(--muted); font-size: 13px; font-weight: 700; margin: 0 1px; }
+
+  /* Turno total span color fix */
+  .turno-total span { color: var(--text); font-weight: 500; }
+  body.light .turno-total span { color: #0d2e52; }
+
+  .btn-export {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: .02em;
+    transition: opacity .15s, transform .1s;
+    white-space: nowrap;
+  }
+  .btn-export:hover { opacity: .88; transform: translateY(-1px); }
+  body.light .btn-export {
+    background: linear-gradient(180deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+    border: 1px solid #14532d;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 4px rgba(20,83,45,.3);
+  }
+  .header-center {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .month-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 7px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    transition: border-color .15s, background .15s;
+    user-select: none;
+  }
+  .month-display:hover { border-color: var(--admin); background: var(--admin-bg); }
+  .month-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    color: #fff;
+  }
+  body.light .month-name { color: #0d2e52; }
+  .month-caret {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+  }
+  .month-display.open .month-caret { transform: rotate(180deg); }
+
+  /* CALENDARIO PICKER */
+  .cal-picker {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    z-index: 300;
+    animation: dropIn .18s ease;
+  }
+  @keyframes dropIn { from { opacity:0; transform: translateX(-50%) translateY(-8px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+  .cal-picker.open { display: block; }
+
+  body.light .cal-picker {
+    background: rgba(230,244,255,0.98);
+    box-shadow: 0 12px 40px rgba(50,100,160,.25), inset 0 1px 0 rgba(255,255,255,.9);
+    backdrop-filter: blur(16px);
+  }
+
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .cal-nav button {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: background .15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-nav button:hover { background: var(--border); }
+  body.light .cal-nav button { background: rgba(210,230,250,.7); border-color: rgba(100,160,215,.4); color: #1a3450; }
+  body.light .cal-nav button:hover { background: rgba(180,215,250,.85); }
+
+  #calMonthLabel {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  body.light #calMonthLabel { color: #0d2e52; }
+
+  .cal-grid-head {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 4px;
+  }
+  .cal-grid-head span {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 3px 0;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-day {
+    text-align: center;
+    padding: 5px 2px;
+    border-radius: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    color: var(--text);
+    transition: background .12s, color .12s;
+    border: 1px solid transparent;
+    line-height: 1.4;
+  }
+  .cal-day:hover { background: var(--admin-bg); border-color: var(--admin-border); }
+  .cal-day.other-month { color: var(--muted); opacity: .45; }
+  .cal-day.today { border-color: var(--admin); color: var(--admin); font-weight: 700; }
+  .cal-day.in-week {
+    background: rgba(96,165,250,.18);
+    border-color: rgba(96,165,250,.3);
+    color: #fff;
+  }
+  body.light .cal-day.in-week { background: rgba(26,95,180,.12); color: #0d2e52; border-color: rgba(26,95,180,.3); }
+  .cal-day.week-start { border-radius: 5px 0 0 5px; background: rgba(96,165,250,.35); }
+  .cal-day.week-end   { border-radius: 0 5px 5px 0; background: rgba(96,165,250,.35); }
+  .cal-day.week-start.week-end { border-radius: 5px; }
+  body.light .cal-day.week-start,
+  body.light .cal-day.week-end { background: rgba(26,95,180,.25); }
+
+  .cal-week-num {
+    font-size: 9px;
+    display: block;
+    color: var(--muted);
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+  .cal-day.in-week .cal-week-num,
+  .cal-day.week-start .cal-week-num,
+  .cal-day.week-end .cal-week-num { color: var(--admin); }
+  body.light .cal-day.in-week .cal-week-num { color: var(--admin); }
+
+  .cal-week-info {
+    margin: 10px 0 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    min-height: 18px;
+  }
+  .cal-week-info.has-selection { color: var(--admin); font-weight: 500; }
+  body.light .cal-week-info.has-selection { color: #1a5fb4; }
+
+  .cal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  .cal-btn-cancel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    transition: background .15s;
+  }
+  .cal-btn-cancel:hover { background: var(--border); }
+  .cal-btn-ok {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border: none;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    transition: opacity .15s;
+  }
+  .cal-btn-ok:disabled { opacity: .35; cursor: not-allowed; }
+  .cal-btn-ok:not(:disabled):hover { opacity: .85; }
+  body.light .cal-btn-cancel { background: rgba(210,230,250,.7); border-color: rgba(100,160,215,.4); color: #1a3450; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">TUR<span>N</span>OS</div>
+
+  <!-- MES + SELECTOR SEMANA -->
+  <div class="header-center">
+    <div class="month-display" id="monthDisplay" onclick="toggleCalPicker()" title="Seleccionar semana">
+      <span class="month-name" id="monthName">MAYO 2026</span>
+      <span class="month-caret" id="monthCaret">▾</span>
+    </div>
+
+    <!-- CALENDARIO DESPLEGABLE -->
+    <div class="cal-picker" id="calPicker">
+      <div class="cal-nav">
+        <button onclick="calPrevMonth()">‹</button>
+        <span id="calMonthLabel"></span>
+        <button onclick="calNextMonth()">›</button>
+      </div>
+      <div class="cal-grid-head">
+        <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-week-info" id="calWeekInfo">Selecciona una semana</div>
+      <div class="cal-actions">
+        <button class="cal-btn-cancel" onclick="closeCal()">Cancelar</button>
+        <button class="cal-btn-ok" id="calBtnOk" onclick="applyWeekFromCal()" disabled>Asignar a semana</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Cambiar tema">
+      <span class="toggle-icon" id="themeIcon">☀️</span>
+      <span class="toggle-text" id="themeText">Modo claro</span>
+    </button>
+    <button class="btn-export" onclick="exportExcel()" title="Exportar a Excel">
+      <span>📊</span> Exportar Excel
+    </button>
+    <button class="btn-new-week" onclick="openNewWeekModal()">＋ Nueva Semana</button>
+  </div>
+</header>
+
+<!-- WEEK TABS -->
+<div class="week-tabs" id="weekTabs"></div>
+
+<!-- MAIN -->
+<div class="main-grid">
+
+  <!-- LEFT: GRUPOS -->
+  <div class="panel-left">
+    <div class="panel-title">Grupos de trabajadores</div>
+
+    <!-- ESENCIALES -->
+    <div class="group-card" data-group="esencial">
+      <div class="group-header">
+        <span class="group-name">Esenciales</span>
+        <button class="btn-add-worker" onclick="addWorker('esencial')">＋ Añadir</button>
+      </div>
+      <div class="workers-list" id="workers-esencial"></div>
+      <div class="group-footer">Total: <span id="count-esencial">0</span> trabajadores</div>
+    </div>
+
+    <!-- ADMINISTRACIÓN -->
+    <div class="group-card" data-group="admin">
+      <div class="group-header">
+        <span class="group-name">Administración</span>
+        <button class="btn-add-worker" onclick="addWorker('admin')">＋ Añadir</button>
+      </div>
+      <div class="workers-list" id="workers-admin"></div>
+      <div class="group-footer">Total: <span id="count-admin">0</span> trabajadores</div>
+    </div>
+
+    <!-- OPERARIOS -->
+    <div class="group-card" data-group="operario">
+      <div class="group-header">
+        <span class="group-name">Operarios</span>
+        <button class="btn-add-worker" onclick="addWorker('operario')">＋ Añadir</button>
+      </div>
+      <div class="workers-list" id="workers-operario"></div>
+      <div class="group-footer">Total: <span id="count-operario">0</span> trabajadores</div>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="total-global">
+      <div>
+        <div class="label">Total Trabajadores</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;">en plantilla</div>
+      </div>
+      <div class="value" id="total-global">0</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: TURNOS -->
+  <div style="display:flex;flex-direction:column;">
+    <div class="panel-right" id="turnosPanel">
+      <!-- Mañana -->
+      <div class="turno-card" data-turno="manana">
+        <div class="turno-header">
+          <div class="turno-title-wrap">
+            <span class="turno-pill">☀ Turno Mañana</span>
+            <div class="turno-horario">
+              <input class="horario-input" id="hora-manana-ini" value="07:00" maxlength="5"
+                title="Hora inicio" oninput="saveHorario('manana')" onblur="formatHorario(this)">
+              <span class="horario-sep">–</span>
+              <input class="horario-input" id="hora-manana-fin" value="15:00" maxlength="5"
+                title="Hora fin" oninput="saveHorario('manana')" onblur="formatHorario(this)">
+            </div>
+          </div>
+          <div class="turno-total">Total turno: <span id="total-manana">0</span></div>
+        </div>
+        <div class="turno-body">
+          <div class="turno-col" data-group="esencial" data-turno="manana">
+            <div class="col-header">
+              <span class="col-label">Esenciales</span>
+              <button class="btn-add-slot" onclick="addSlot('manana','esencial')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-manana-esencial"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-manana-esencial">0</span></div>
+          </div>
+          <div class="turno-col" data-group="admin" data-turno="manana">
+            <div class="col-header">
+              <span class="col-label">Administración</span>
+              <button class="btn-add-slot" onclick="addSlot('manana','admin')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-manana-admin"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-manana-admin">0</span></div>
+          </div>
+          <div class="turno-col" data-group="operario" data-turno="manana">
+            <div class="col-header">
+              <span class="col-label">Operarios</span>
+              <button class="btn-add-slot" onclick="addSlot('manana','operario')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-manana-operario"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-manana-operario">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarde -->
+      <div class="turno-card" data-turno="tarde">
+        <div class="turno-header">
+          <div class="turno-title-wrap">
+            <span class="turno-pill">🌤 Turno Tarde</span>
+            <div class="turno-horario">
+              <input class="horario-input" id="hora-tarde-ini" value="15:00" maxlength="5"
+                title="Hora inicio" oninput="saveHorario('tarde')" onblur="formatHorario(this)">
+              <span class="horario-sep">–</span>
+              <input class="horario-input" id="hora-tarde-fin" value="23:00" maxlength="5"
+                title="Hora fin" oninput="saveHorario('tarde')" onblur="formatHorario(this)">
+            </div>
+          </div>
+          <div class="turno-total">Total turno: <span id="total-tarde">0</span></div>
+        </div>
+        <div class="turno-body">
+          <div class="turno-col" data-group="esencial" data-turno="tarde">
+            <div class="col-header">
+              <span class="col-label">Esenciales</span>
+              <button class="btn-add-slot" onclick="addSlot('tarde','esencial')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-tarde-esencial"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-tarde-esencial">0</span></div>
+          </div>
+          <div class="turno-col" data-group="admin" data-turno="tarde">
+            <div class="col-header">
+              <span class="col-label">Administración</span>
+              <button class="btn-add-slot" onclick="addSlot('tarde','admin')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-tarde-admin"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-tarde-admin">0</span></div>
+          </div>
+          <div class="turno-col" data-group="operario" data-turno="tarde">
+            <div class="col-header">
+              <span class="col-label">Operarios</span>
+              <button class="btn-add-slot" onclick="addSlot('tarde','operario')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-tarde-operario"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-tarde-operario">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Noche -->
+      <div class="turno-card" data-turno="noche">
+        <div class="turno-header">
+          <div class="turno-title-wrap">
+            <span class="turno-pill">🌙 Turno Noche</span>
+            <div class="turno-horario">
+              <input class="horario-input" id="hora-noche-ini" value="23:00" maxlength="5"
+                title="Hora inicio" oninput="saveHorario('noche')" onblur="formatHorario(this)">
+              <span class="horario-sep">–</span>
+              <input class="horario-input" id="hora-noche-fin" value="07:00" maxlength="5"
+                title="Hora fin" oninput="saveHorario('noche')" onblur="formatHorario(this)">
+            </div>
+          </div>
+          <div class="turno-total">Total turno: <span id="total-noche">0</span></div>
+        </div>
+        <div class="turno-body">
+          <div class="turno-col" data-group="esencial" data-turno="noche">
+            <div class="col-header">
+              <span class="col-label">Esenciales</span>
+              <button class="btn-add-slot" onclick="addSlot('noche','esencial')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-noche-esencial"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-noche-esencial">0</span></div>
+          </div>
+          <div class="turno-col" data-group="admin" data-turno="noche">
+            <div class="col-header">
+              <span class="col-label">Administración</span>
+              <button class="btn-add-slot" onclick="addSlot('noche','admin')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-noche-admin"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-noche-admin">0</span></div>
+          </div>
+          <div class="turno-col" data-group="operario" data-turno="noche">
+            <div class="col-header">
+              <span class="col-label">Operarios</span>
+              <button class="btn-add-slot" onclick="addSlot('noche','operario')">＋</button>
+            </div>
+            <div class="slot-list" id="slots-noche-operario"></div>
+            <div class="col-subtotal">Subtotal: <span id="sub-noche-operario">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY BAR -->
+    <div class="summary-bar">
+      <div class="summary-card" data-turno="manana">
+        <div>
+          <div class="s-label">☀ Mañana</div>
+          <div class="s-detail" id="det-manana">07:00 – 15:00</div>
+        </div>
+        <div class="s-val" id="sum-manana">0</div>
+      </div>
+      <div class="summary-card" data-turno="tarde">
+        <div>
+          <div class="s-label">🌤 Tarde</div>
+          <div class="s-detail" id="det-tarde">15:00 – 23:00</div>
+        </div>
+        <div class="s-val" id="sum-tarde">0</div>
+      </div>
+      <div class="summary-card" data-turno="noche">
+        <div>
+          <div class="s-label">🌙 Noche</div>
+          <div class="s-detail" id="det-noche">23:00 – 07:00</div>
+        </div>
+        <div class="s-val" id="sum-noche">0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA SEMANA -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Generar nueva semana</h2>
+    <p>Elige qué datos copiar de la semana actual a la nueva. Los turnos sin copiar empezarán vacíos.</p>
+    <label class="checkbox-row">
+      <input type="checkbox" id="copyWorkers" checked>
+      <label for="copyWorkers">Mantener plantilla de trabajadores</label>
+      <small>recomendado</small>
+    </label>
+    <label class="checkbox-row">
+      <input type="checkbox" id="copyShifts">
+      <label for="copyShifts">Copiar asignaciones de turno como punto de partida</label>
+    </label>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-confirm" onclick="confirmNewWeek()">Crear semana</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const GROUPS = ['esencial','admin','operario'];
+const TURNOS = ['manana','tarde','noche'];
+
+let state = {
+  currentWeek: 0,
+  weeks: []
+};
+
+function freshWeekData() {
+  return {
+    workers: { esencial: [], admin: [], operario: [] },
+    slots: {
+      manana: { esencial: [], admin: [], operario: [] },
+      tarde:  { esencial: [], admin: [], operario: [] },
+      noche:  { esencial: [], admin: [], operario: [] }
+    }
+  };
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  const saved = localStorage.getItem('turnos_state_v2');
+  if (saved) {
+    try { state = JSON.parse(saved); } catch(e) { createFirstWeek(); }
+  } else {
+    createFirstWeek();
+  }
+  renderAll();
+}
+
+function createFirstWeek() {
+  state.weeks = [freshWeekData()];
+  state.currentWeek = 0;
+}
+
+function save() {
+  // Only save workers, not full state (as per requirements)
+  // Actually save everything for UX — workers are always preserved
+  localStorage.setItem('turnos_state_v2', JSON.stringify(state));
+}
+
+// ─── WEEK MANAGEMENT ─────────────────────────────────────────────────────────
+function openNewWeekModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+function confirmNewWeek() {
+  const copyWorkers = document.getElementById('copyWorkers').checked;
+  const copyShifts  = document.getElementById('copyShifts').checked;
+  const cur = state.weeks[state.currentWeek];
+  const nw = freshWeekData();
+
+  if (copyWorkers) {
+    GROUPS.forEach(g => { nw.workers[g] = cur.workers[g].map(w => ({...w})); });
+  }
+  if (copyShifts) {
+    TURNOS.forEach(t => {
+      GROUPS.forEach(g => { nw.slots[t][g] = cur.slots[t][g].map(s => ({...s})); });
+    });
+  }
+
+  state.weeks.push(nw);
+  state.currentWeek = state.weeks.length - 1;
+  save();
+  closeModal();
+  renderAll();
+}
+
+function switchWeek(idx) {
+  state.currentWeek = idx;
+  renderAll();
+}
+
+function deleteWeek(idx) {
+  if (state.weeks.length === 1) return;
+  state.weeks.splice(idx, 1);
+  if (state.currentWeek >= state.weeks.length) state.currentWeek = state.weeks.length - 1;
+  save();
+  renderAll();
+}
+
+// ─── WORKERS ─────────────────────────────────────────────────────────────────
+function addWorker(group) {
+  const wk = state.weeks[state.currentWeek];
+  const id = Date.now() + Math.random();
+  wk.workers[group].push({ id, name: '' });
+  save();
+  renderWorkers();
+  renderAllSlots();
+  // Focus last input
+  setTimeout(() => {
+    const list = document.getElementById(`workers-${group}`);
+    const inputs = list.querySelectorAll('.worker-name-input');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 30);
+}
+
+function removeWorker(group, id) {
+  const wk = state.weeks[state.currentWeek];
+  wk.workers[group] = wk.workers[group].filter(w => w.id !== id);
+  // Also remove from slots
+  TURNOS.forEach(t => {
+    wk.slots[t][group] = wk.slots[t][group].filter(s => s.workerId !== id);
+  });
+  save();
+  renderWorkers();
+  renderAllSlots();
+}
+
+function updateWorkerName(group, id, name) {
+  const wk = state.weeks[state.currentWeek];
+  const w = wk.workers[group].find(x => x.id === id);
+  if (w) w.name = name;
+  save();
+  // Refresh selects in slots
+  TURNOS.forEach(t => {
+    wk.slots[t][group].forEach(s => {
+      const sel = document.getElementById(`select-${s.slotId}`);
+      if (sel && s.workerId === id) { /* will re-render */ }
+    });
+  });
+  renderAllSlots();
+  updateCounts();
+}
+
+function renderWorkers() {
+  const wk = state.weeks[state.currentWeek];
+  GROUPS.forEach(group => {
+    const container = document.getElementById(`workers-${group}`);
+    container.innerHTML = '';
+    if (wk.workers[group].length === 0) {
+      container.innerHTML = `<div class="empty-state">Sin trabajadores — pulsa ＋</div>`;
+    } else {
+      wk.workers[group].forEach(w => {
+        const row = document.createElement('div');
+        row.className = 'worker-row';
+        row.innerHTML = `
+          <span class="worker-dot"></span>
+          <input class="worker-name-input" type="text" placeholder="Nombre…"
+            value="${escHtml(w.name)}"
+            onchange="updateWorkerName('${group}',${w.id},this.value)"
+            oninput="updateWorkerName('${group}',${w.id},this.value)">
+          <button class="btn-remove" onclick="removeWorker('${group}',${w.id})" title="Eliminar">✕</button>
+        `;
+        container.appendChild(row);
+      });
+    }
+  });
+  updateCounts();
+}
+
+function updateCounts() {
+  const wk = state.weeks[state.currentWeek];
+  let total = 0;
+  GROUPS.forEach(g => {
+    const c = wk.workers[g].length;
+    document.getElementById(`count-${g}`).textContent = c;
+    total += c;
+  });
+  document.getElementById('total-global').textContent = total;
+}
+
+// ─── SLOTS ────────────────────────────────────────────────────────────────────
+function addSlot(turno, group) {
+  const wk = state.weeks[state.currentWeek];
+  const slotId = `s_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  wk.slots[turno][group].push({ slotId, workerId: null });
+  save();
+  renderAllSlots();
+}
+
+function removeSlot(turno, group, slotId) {
+  const wk = state.weeks[state.currentWeek];
+  wk.slots[turno][group] = wk.slots[turno][group].filter(s => s.slotId !== slotId);
+  save();
+  renderAllSlots();
+}
+
+function assignWorker(turno, group, slotId, workerId) {
+  const wk = state.weeks[state.currentWeek];
+  const slot = wk.slots[turno][group].find(s => s.slotId === slotId);
+  if (slot) slot.workerId = workerId ? Number(workerId) : null;
+  save();
+  renderAllSlots(); // redraw all so other turnos hide/show this worker
+}
+
+function renderSlots(turno, group) {
+  const wk = state.weeks[state.currentWeek];
+  const container = document.getElementById(`slots-${turno}-${group}`);
+  container.innerHTML = '';
+  const slots = wk.slots[turno][group];
+  const workers = wk.workers[group];
+
+  // Collect IDs already assigned in OTHER turnos (same group)
+  const assignedElsewhere = new Set();
+  TURNOS.forEach(t => {
+    if (t === turno) return;
+    wk.slots[t][group].forEach(s => {
+      if (s.workerId !== null) assignedElsewhere.add(s.workerId);
+    });
+  });
+
+  if (slots.length === 0) {
+    container.innerHTML = `<div class="empty-state">Vacío</div>`;
+  } else {
+    slots.forEach(slot => {
+      const item = document.createElement('div');
+      item.className = 'slot-item';
+
+      // Build select options — hide workers assigned elsewhere UNLESS it's this slot's current value
+      let opts = `<option value="">— Seleccionar —</option>`;
+      workers.forEach(w => {
+        if (assignedElsewhere.has(w.id) && slot.workerId !== w.id) return; // skip
+        const name = w.name || `(sin nombre)`;
+        const sel = slot.workerId === w.id ? 'selected' : '';
+        opts += `<option value="${w.id}" ${sel}>${escHtml(name)}</option>`;
+      });
+
+      item.innerHTML = `
+        <select class="slot-select" id="select-${slot.slotId}"
+          onchange="assignWorker('${turno}','${group}','${slot.slotId}',this.value)">
+          ${opts}
+        </select>
+        <button class="btn-remove-slot" onclick="removeSlot('${turno}','${group}','${slot.slotId}')" title="Eliminar hueco">✕</button>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  // subtotal
+  const assigned = slots.filter(s => s.workerId !== null).length;
+  document.getElementById(`sub-${turno}-${group}`).textContent = assigned;
+}
+
+function renderAllSlots() {
+  TURNOS.forEach(t => {
+    GROUPS.forEach(g => renderSlots(t, g));
+  });
+  renderSummary();
+}
+
+function renderSummary() {
+  const wk = state.weeks[state.currentWeek];
+  TURNOS.forEach(t => {
+    let total = 0;
+    GROUPS.forEach(g => {
+      total += wk.slots[t][g].filter(s => s.workerId !== null).length;
+    });
+    document.getElementById(`total-${t}`).textContent = total;
+    document.getElementById(`sum-${t}`).textContent = total;
+    // Horario desde los inputs editables
+    const ini = document.getElementById(`hora-${t}-ini`)?.value || DEFAULT_HORARIOS[t].ini;
+    const fin = document.getElementById(`hora-${t}-fin`)?.value || DEFAULT_HORARIOS[t].fin;
+    document.getElementById(`det-${t}`).textContent = `${ini} – ${fin}`;
+  });
+}
+
+// ─── WEEK TABS ────────────────────────────────────────────────────────────────
+function renderWeekTabs() {
+  const container = document.getElementById('weekTabs');
+  container.innerHTML = '';
+  state.weeks.forEach((wk, idx) => {
+    const tab = document.createElement('div');
+    tab.className = 'week-tab' + (idx === state.currentWeek ? ' active' : '');
+    const label = wk.isoWeek
+      ? `SEMANA ${wk.isoWeek}`
+      : `SEMANA ${idx+1}`;
+    tab.innerHTML = `
+      <span onclick="switchWeek(${idx})">${label}</span>
+      ${state.weeks.length > 1 ? `<button class="del-week" onclick="deleteWeek(${idx})" title="Eliminar semana">✕</button>` : ''}
+    `;
+    container.appendChild(tab);
+  });
+  updateHeaderMonth();
+}
+
+function updateHeaderMonth() {
+  const wk = state.weeks[state.currentWeek];
+  const monthEl = document.getElementById('monthName');
+  if (!monthEl) return;
+  const MESES = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+  if (wk && wk.year != null && wk.month != null) {
+    monthEl.textContent = `${MESES[wk.month]} ${wk.year}`;
+  } else {
+    const now = new Date();
+    monthEl.textContent = `${MESES[now.getMonth()]} ${now.getFullYear()}`;
+  }
+}
+
+// ─── CALENDAR PICKER ─────────────────────────────────────────────────────────
+let calState = {
+  year: new Date().getFullYear(),
+  month: new Date().getMonth(),
+  selectedWeek: null,   // { isoWeek, year, start, end }
+};
+
+function toggleCalPicker() {
+  const picker = document.getElementById('calPicker');
+  const btn    = document.getElementById('monthDisplay');
+  if (picker.classList.contains('open')) {
+    closeCal(); return;
+  }
+  // Open at current week's month if set
+  const wk = state.weeks[state.currentWeek];
+  if (wk && wk.year != null) {
+    calState.year  = wk.year;
+    calState.month = wk.month;
+  } else {
+    calState.year  = new Date().getFullYear();
+    calState.month = new Date().getMonth();
+  }
+  calState.selectedWeek = null;
+  picker.classList.add('open');
+  btn.classList.add('open');
+  renderCal();
+  // close on outside click
+  setTimeout(() => document.addEventListener('click', calOutside), 10);
+}
+
+function closeCal() {
+  document.getElementById('calPicker').classList.remove('open');
+  document.getElementById('monthDisplay').classList.remove('open');
+  document.removeEventListener('click', calOutside);
+}
+
+function calOutside(e) {
+  const picker = document.getElementById('calPicker');
+  const btn    = document.getElementById('monthDisplay');
+  if (!picker.contains(e.target) && !btn.contains(e.target)) closeCal();
+}
+
+function calPrevMonth() {
+  calState.month--;
+  if (calState.month < 0) { calState.month = 11; calState.year--; }
+  calState.selectedWeek = null;
+  renderCal();
+}
+function calNextMonth() {
+  calState.month++;
+  if (calState.month > 11) { calState.month = 0; calState.year++; }
+  calState.selectedWeek = null;
+  renderCal();
+}
+
+// ISO week number (Mon=start)
+function getISOWeek(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return { week: Math.ceil((((d - yearStart) / 86400000) + 1) / 7), year: d.getUTCFullYear() };
+}
+
+function getMondayOfISOWeek(week, year) {
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const day  = jan4.getUTCDay() || 7;
+  const mon  = new Date(jan4);
+  mon.setUTCDate(jan4.getUTCDate() - (day - 1) + (week - 1) * 7);
+  return mon;
+}
+
+function fmtShort(d) {
+  return `${String(d.getUTCDate()).padStart(2,'0')}/${String(d.getUTCMonth()+1).padStart(2,'0')}`;
+}
+
+function renderCal() {
+  const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('calMonthLabel').textContent = `${MESES[calState.month]} ${calState.year}`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  // First day of month (Mon=0)
+  const firstDay = new Date(calState.year, calState.month, 1);
+  const startDow = (firstDay.getDay() + 6) % 7; // 0=Mon
+  const daysInMonth = new Date(calState.year, calState.month + 1, 0).getDate();
+  const daysInPrev  = new Date(calState.year, calState.month, 0).getDate();
+
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+
+  const selWeek  = calState.selectedWeek;
+
+  // Build cells: prev overflow + current + next overflow (to fill 6 rows = 42 cells)
+  const cells = [];
+  for (let i = startDow - 1; i >= 0; i--) {
+    const d = new Date(calState.year, calState.month - 1, daysInPrev - i);
+    cells.push({ date: d, current: false });
+  }
+  for (let i = 1; i <= daysInMonth; i++) {
+    cells.push({ date: new Date(calState.year, calState.month, i), current: true });
+  }
+  while (cells.length < 42) {
+    const d = new Date(calState.year, calState.month + 1, cells.length - startDow - daysInMonth + 1);
+    cells.push({ date: d, current: false });
+  }
+
+  cells.forEach(cell => {
+    const div = document.createElement('div');
+    div.className = 'cal-day' + (cell.current ? '' : ' other-month');
+
+    const iso = getISOWeek(cell.date);
+    const isToday = `${cell.date.getFullYear()}-${cell.date.getMonth()}-${cell.date.getDate()}` === todayStr;
+    if (isToday) div.classList.add('today');
+
+    // Highlight selected week
+    if (selWeek) {
+      const mon = getMondayOfISOWeek(selWeek.week, selWeek.isoYear);
+      const sun = new Date(mon); sun.setUTCDate(mon.getUTCDate() + 6);
+      const cd  = Date.UTC(cell.date.getFullYear(), cell.date.getMonth(), cell.date.getDate());
+      const ms  = mon.getTime(), me = sun.getTime();
+      if (cd >= ms && cd <= me) {
+        div.classList.add('in-week');
+        if (cd === ms) div.classList.add('week-start');
+        if (cd === me) div.classList.add('week-end');
+      }
+    }
+
+    // Show week number only on Mondays (dow=1) or first cell of row
+    const dow = (cell.date.getDay() + 6) % 7;
+    const weekNumHtml = dow === 0 ? `<span class="cal-week-num">S${String(iso.week).padStart(2,'0')}</span>` : '';
+
+    div.innerHTML = `${cell.date.getDate()}${weekNumHtml}`;
+
+    div.onclick = (e) => {
+      e.stopPropagation();
+      calState.selectedWeek = { week: iso.week, isoYear: iso.year };
+      const mon = getMondayOfISOWeek(iso.week, iso.year);
+      const sun = new Date(mon); sun.setUTCDate(mon.getUTCDate() + 6);
+      const info = document.getElementById('calWeekInfo');
+      info.textContent = `Semana ${iso.week} · ${fmtShort(mon)} – ${fmtShort(sun)}`;
+      info.className = 'cal-week-info has-selection';
+      document.getElementById('calBtnOk').disabled = false;
+      renderCal(); // redraw highlight
+    };
+
+    grid.appendChild(div);
+  });
+
+  // Reset info if no selection
+  if (!selWeek) {
+    const info = document.getElementById('calWeekInfo');
+    info.textContent = 'Selecciona una semana';
+    info.className = 'cal-week-info';
+    document.getElementById('calBtnOk').disabled = true;
+  }
+}
+
+function applyWeekFromCal() {
+  if (!calState.selectedWeek) return;
+  const { week, isoYear } = calState.selectedWeek;
+  const mon = getMondayOfISOWeek(week, isoYear);
+  const sun = new Date(mon); sun.setUTCDate(mon.getUTCDate() + 6);
+  const wk = state.weeks[state.currentWeek];
+  wk.isoWeek   = week;
+  wk.year      = isoYear;
+  wk.month     = mon.getUTCMonth();
+  wk.dateRange = `${fmtShort(mon)}–${fmtShort(sun)}`;
+  save();
+  closeCal();
+  renderWeekTabs();
+}
+
+// ─── FULL RENDER ──────────────────────────────────────────────────────────────
+function renderAll() {
+  renderWeekTabs();
+  renderWorkers();
+  renderAllSlots();
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── HORARIOS ────────────────────────────────────────────────────────────────
+const DEFAULT_HORARIOS = {
+  manana: { ini: '07:00', fin: '15:00' },
+  tarde:  { ini: '15:00', fin: '23:00' },
+  noche:  { ini: '23:00', fin: '07:00' }
+};
+
+function saveHorario(turno) {
+  const ini = document.getElementById(`hora-${turno}-ini`).value;
+  const fin = document.getElementById(`hora-${turno}-fin`).value;
+  const horarios = loadHorarios();
+  horarios[turno] = { ini, fin };
+  localStorage.setItem('turnos_horarios', JSON.stringify(horarios));
+  // Sync summary bar in real time
+  const det = document.getElementById(`det-${turno}`);
+  if (det) det.textContent = `${ini} – ${fin}`;
+}
+
+function loadHorarios() {
+  try { return JSON.parse(localStorage.getItem('turnos_horarios')) || {...DEFAULT_HORARIOS}; }
+  catch(e) { return {...DEFAULT_HORARIOS}; }
+}
+
+function applyHorarios() {
+  const h = loadHorarios();
+  TURNOS.forEach(t => {
+    const data = h[t] || DEFAULT_HORARIOS[t];
+    document.getElementById(`hora-${t}-ini`).value = data.ini;
+    document.getElementById(`hora-${t}-fin`).value = data.fin;
+  });
+}
+
+function formatHorario(input) {
+  // Auto-format: if user types "715" → "07:15"
+  let v = input.value.replace(/[^0-9:]/g,'');
+  if (/^\d{3,4}$/.test(v)) {
+    const padded = v.padStart(4,'0');
+    v = padded.slice(0,2) + ':' + padded.slice(2);
+  }
+  // Clamp hours 0-23, minutes 0-59
+  const m = v.match(/^(\d{1,2}):(\d{2})$/);
+  if (m) {
+    const hh = Math.min(23, parseInt(m[1])).toString().padStart(2,'0');
+    const mm = Math.min(59, parseInt(m[2])).toString().padStart(2,'0');
+    v = `${hh}:${mm}`;
+  }
+  input.value = v;
+  // save after format
+  const turno = input.id.replace('hora-','').replace('-ini','').replace('-fin','');
+  saveHorario(turno);
+}
+
+// ─── EXPORT EXCEL ─────────────────────────────────────────────────────────────
+function exportExcel() {
+  // Dynamically load SheetJS if not present
+  if (typeof XLSX === 'undefined') {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = () => doExport();
+    document.head.appendChild(s);
+  } else {
+    doExport();
+  }
+}
+
+function doExport() {
+  const wb = XLSX.utils.book_new();
+  const horarios = loadHorarios();
+  const TURNO_LABELS = { manana: 'Turno Mañana', tarde: 'Turno Tarde', noche: 'Turno Noche' };
+  const GROUP_LABELS = { esencial: 'Esenciales', admin: 'Administración', operario: 'Operarios' };
+
+  state.weeks.forEach((wk, idx) => {
+    const weekLabel = wk.isoWeek ? `SEMANA ${wk.isoWeek}` : `SEMANA ${idx+1}`;
+    const rows = [];
+
+    // Title row
+    rows.push([weekLabel]);
+    rows.push([]);
+
+    // Workers section
+    rows.push(['PLANTILLA DE TRABAJADORES']);
+    rows.push(['Grupo', 'Nombre']);
+    GROUPS.forEach(g => {
+      wk.workers[g].forEach(w => {
+        rows.push([GROUP_LABELS[g], w.name || '(sin nombre)']);
+      });
+    });
+    rows.push([]);
+
+    // Shifts section
+    TURNOS.forEach(t => {
+      const h = horarios[t] || DEFAULT_HORARIOS[t];
+      rows.push([`${TURNO_LABELS[t]}  (${h.ini} – ${h.fin})`]);
+      rows.push(['Grupo', 'Trabajador']);
+      let turnoTotal = 0;
+      GROUPS.forEach(g => {
+        wk.slots[t][g].forEach(slot => {
+          if (slot.workerId !== null) {
+            const worker = wk.workers[g].find(w => w.id === slot.workerId);
+            const nombre = worker ? (worker.name || '(sin nombre)') : '(eliminado)';
+            rows.push([GROUP_LABELS[g], nombre]);
+            turnoTotal++;
+          }
+        });
+      });
+      rows.push(['TOTAL TURNO', turnoTotal]);
+      rows.push([]);
+    });
+
+    // Grand total
+    let grand = 0;
+    TURNOS.forEach(t => GROUPS.forEach(g => {
+      grand += wk.slots[t][g].filter(s => s.workerId !== null).length;
+    }));
+    rows.push(['TOTAL TRABAJADORES ASIGNADOS', grand]);
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    // Column widths
+    ws['!cols'] = [{ wch: 22 }, { wch: 26 }];
+
+    // Bold title rows (row 0 and section headers)
+    // SheetJS CE doesn't support full styling without pro, but we set merges
+    ws['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }
+    ];
+
+    const sheetName = weekLabel.replace(/[:\\\/\?\*\[\]]/g, '').slice(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  // Generate filename with current date
+  const now = new Date();
+  const fecha = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+  XLSX.writeFile(wb, `turnos_${fecha}.xlsx`);
+}
+
+// ─── THEME ────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('turnos_theme', isLight ? 'light' : 'dark');
+  document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀️';
+  document.getElementById('themeText').textContent = isLight ? 'Modo oscuro' : 'Modo claro';
+}
+
+function applyTheme() {
+  const saved = localStorage.getItem('turnos_theme');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('themeIcon').textContent = '🌙';
+    document.getElementById('themeText').textContent = 'Modo oscuro';
+  }
+}
+
+// ─── START ────────────────────────────────────────────────────────────────────
+applyTheme();
+applyHorarios();
+init();
+</script>
+</body>
+</html>
